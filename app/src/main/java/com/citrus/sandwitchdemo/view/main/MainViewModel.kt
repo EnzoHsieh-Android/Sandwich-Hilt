@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
+/**Hilt setup 07 - 應用inject的viewModel須加上@HiltViewModel*/
 class MainViewModel @Inject constructor(
     /**適合Repository Pattern的寫法*/
     private val model: Repository,

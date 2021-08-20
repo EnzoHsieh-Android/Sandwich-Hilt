@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-/**Hilt setup 07 - 應用inject的viewModel須加上@HiltViewModel*/
 class DetailViewModel @Inject constructor(
     private val model: Repository,
 ): ViewModel() {
