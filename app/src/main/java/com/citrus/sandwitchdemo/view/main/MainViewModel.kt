@@ -19,7 +19,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     /**適合Repository Pattern的寫法*/
     private val model: Repository,
-    /**不透過Repository的寫法*/
+    /**適合不透過Repository的寫法*/
     private val apiService: ApiService,
     private val dataSourceService: DataSourceService
 ) : ViewModel() {
@@ -54,6 +54,7 @@ class MainViewModel @Inject constructor(
         }
 
 
+    /**適合不透過Repository的寫法*/
     /**在viewModel直接接收api資料轉換成liveData*/
     /**success若要資料處理寫在toLiveData{ }內*/
     val posterListLiveData: LiveData<Resource<List<User>>> =
@@ -79,6 +80,7 @@ class MainViewModel @Inject constructor(
     val userLiveData = MutableLiveData<List<User>>()
     private val disposable = CompositeDisposable()
 
+    /**適合不透過Repository的寫法*/
     /**non Repository*/
     private fun getAlbumsViaDataSource() = dataSourceService.getAlbumsViaDataSource(1)
         /**retry fetching data 3 times with 5000L interval when the request gets failure.*/
@@ -95,6 +97,7 @@ class MainViewModel @Inject constructor(
             }
         }
 
+    /**適合不透過Repository的寫法*/
     /**non Repository*/
     private fun getUsersViaDataSource() = dataSourceService.getUsersViaDataSource()
         .retry(3, 5000L)
