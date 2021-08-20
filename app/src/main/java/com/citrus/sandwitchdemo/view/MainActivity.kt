@@ -5,6 +5,8 @@ import android.os.Bundle
 import com.citrus.sandwitchdemo.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
+
+/**Hilt setup 06 - 應用inject的Activity和子節點Fragment都須加上@AndroidEntryPoint*/
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

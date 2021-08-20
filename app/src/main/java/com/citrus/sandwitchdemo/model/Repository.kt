@@ -11,6 +11,8 @@ import javax.inject.Singleton
 @Singleton
 class Repository @Inject constructor(private val apiService: ApiService) {
 
+
+    /**以flow接收api資料後emit，由viewModel collect結果*/
     fun getUsers() = flow {
         apiService.getUsersViaApiResponse()
             .suspendOnSuccess {
@@ -18,14 +20,13 @@ class Repository @Inject constructor(private val apiService: ApiService) {
             }.suspendOnError {
                 emit(Resource.Error(this.errorBody.toString()))
             }
+        /**onCompletion相當於finally，Success或Error都會執行區塊內容*/
     }.onCompletion { emit(Resource.Loading(false)) }
         .flowOn(IO)
 
 
     /** Merge - List型態專用，合併不同參數發送的結果
-     *
      *  mergePolicy -
-     *
      *    IGNORE_FAILURE：忽略失敗
      *    PREFERRED_FAILURE (default)： 可從responses取得失敗訊息
      * */

@@ -16,25 +16,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    /**Repository Pattern*/
+    /**適合Repository Pattern的寫法*/
     private val model: Repository,
-    /**non Repository*/
+    /**不透過Repository的寫法*/
     private val apiService: ApiService,
     private val dataSourceService: DataSourceService
 ) : ViewModel() {
 
-    val albumLiveData = MutableLiveData<Resource<List<Album>>>()
-    val userLiveData = MutableLiveData<List<User>>()
-    private val disposable = CompositeDisposable()
+    /** --------以ApiResponse封裝類型的api處理方式---------*/
 
+    /**sharedFlow 單次觸發，效果同singleLiveEvent*/
     private val _albumFlow = MutableSharedFlow<Resource<List<Album>>>()
     val albumFlow: SharedFlow<Resource<List<Album>>> = _albumFlow
 
+    /**stateFlow 有資料就觸發，效果同LiveData，不丟失連續emit的value*/
     private val _userFlow = MutableStateFlow<Resource<List<User>>>(Resource.Loading(true))
     val userFlow: StateFlow<Resource<List<User>>> = _userFlow
 
     /**Repository Pattern*/
-    /**透過Repository接收api資料轉換成flow*/
+    /**collect Repository 執行結果，處理資料後emit給View*/
     fun fetchUsers() {
         viewModelScope.launch {
             model.getUsers().collect { data ->
@@ -44,7 +44,7 @@ class MainViewModel @Inject constructor(
     }
 
     /**Repository Pattern*/
-    /**透過Repository 合併兩支api資料轉換成flow*/
+    /**同上，提供merge兩支回傳類型相同api的list合併*/
     fun fetchAlbums() =
         viewModelScope.launch {
             model.getAlbumsById(currentPage = 1, nextPage = 2).collect { result ->
@@ -53,8 +53,7 @@ class MainViewModel @Inject constructor(
         }
 
 
-    /**non Repository*/
-    /**直接接收api資料轉換成liveData*/
+    /**在viewModel直接接收api資料轉換成liveData*/
     /**success若要資料處理寫在toLiveData{ }內*/
     val posterListLiveData: LiveData<Resource<List<User>>> =
         liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
@@ -70,17 +69,22 @@ class MainViewModel @Inject constructor(
                         /**包裝成Resource回傳*/
                         return@toLiveData Resource.Success(this)
                     }
-            ) // returns an observable LiveData
+            )
         }
 
 
+    /** --------以DataSource封裝類型的api處理方式---------*/
+    val albumLiveData = MutableLiveData<Resource<List<Album>>>()
+    val userLiveData = MutableLiveData<List<User>>()
+    private val disposable = CompositeDisposable()
+
     /**non Repository*/
     private fun getAlbumsViaDataSource() = dataSourceService.getAlbumsViaDataSource(1)
-        // retry fetching data 3 times with 5000L interval when the request gets failure.
+        /**retry fetching data 3 times with 5000L interval when the request gets failure.*/
         .retry(3, 5000L)
         /**這行不寫不能用*/
         .joinDisposable(disposable)
-        .observeResponse { response -> // handle the case when the API request gets a success response.
+        .observeResponse { response ->
             response.onSuccess {
                 albumLiveData.value = Resource.Success(this.data!!)
             }.onError {
@@ -104,14 +108,17 @@ class MainViewModel @Inject constructor(
             }
         }
 
-    /**invoke DataSource*/
+
+    /**DataSource需要request()啟動*/
     fun getStuff() {
         getAlbumsViaDataSource()
             .request()
+            /**request Success後順序執行concat內容*/
             .concat(getUsersViaDataSource())
     }
 
 
+    /**必要清除*/
     override fun onCleared() {
         super.onCleared()
         if (!disposable.disposed) {

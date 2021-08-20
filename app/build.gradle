@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    /**Hilt setup 02 - 加上dependencies之2*/
     id 'dagger.hilt.android.plugin'
 }
 
@@ -79,6 +80,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
     /** Dagger Hilt */
+    /**Hilt setup 01 - 加上dependencies之1*/
     def hilt_version = '2.37'
     implementation("com.google.dagger:hilt-android:$hilt_version")
     kapt("com.google.dagger:hilt-android-compiler:$hilt_version")

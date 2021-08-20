@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-
+/**Hilt setup 05 - 區分注入實體在哪個Component*/
 @Module
 @InstallIn(SingletonComponent::class)
 interface AppModule {
@@ -62,6 +62,7 @@ interface AppModule {
                 .build()
 
 
+        /**下方Qualifier分類的實體只要有用到都要記得@上所屬class name，DI才知道要注入哪個*/
         @Provides
         @Singleton
         fun provideApiService(@ApiResponseRetrofit retrofit: Retrofit): ApiService =
@@ -93,6 +94,7 @@ object FragmentModule {
 }
 
 
+/**以class name區分不同實作方式的同類型實體*/
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ApiResponseRetrofit
