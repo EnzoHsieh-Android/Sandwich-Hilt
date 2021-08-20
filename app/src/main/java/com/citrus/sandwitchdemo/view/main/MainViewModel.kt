@@ -34,7 +34,7 @@ class MainViewModel @Inject constructor(
     val userFlow: StateFlow<Resource<List<User>>> = _userFlow
 
     /**Repository Pattern*/
-    /**接收api資料轉換成flow*/
+    /**透過Repository接收api資料轉換成flow*/
     fun fetchUsers() {
         viewModelScope.launch {
             model.getUsers().collect { data ->
@@ -44,6 +44,7 @@ class MainViewModel @Inject constructor(
     }
 
     /**Repository Pattern*/
+    /**透過Repository 合併兩支api資料轉換成flow*/
     fun fetchAlbums() =
         viewModelScope.launch {
             model.getAlbumsById(currentPage = 1, nextPage = 2).collect { result ->
@@ -53,7 +54,8 @@ class MainViewModel @Inject constructor(
 
 
     /**non Repository*/
-    /**接收api資料轉換成liveData*/
+    /**直接接收api資料轉換成liveData*/
+    /**success若要資料處理寫在toLiveData{ }內*/
     val posterListLiveData: LiveData<Resource<List<User>>> =
         liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
             emitSource(
@@ -65,6 +67,7 @@ class MainViewModel @Inject constructor(
                         emit(Resource.Error(this.message!!))
                         // handles exceptional cases when the API request gets an exception response.
                     }.toLiveData {
+                        /**包裝成Resource回傳*/
                         return@toLiveData Resource.Success(this)
                     }
             ) // returns an observable LiveData
