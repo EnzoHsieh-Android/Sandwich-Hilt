@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="keyboard_button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingTop">@dimen/dp_12</item>
+        <item name="android:paddingBottom">@dimen/dp_12</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/comfortaa</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginStart">@dimen/dp_5</item>
+        <item name="android:layout_marginEnd">@dimen/dp_5</item>
+        <item name="android:stateListAnimator">@animator/selector_animator</item>
+        <item name="android:textColor">@color/colorSecondText</item>
+        <item name="android:textSize">@dimen/sp_24</item>
+        <item name="android:tint">@color/colorSecondText</item>
+        <item name="android:clickable">true</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:background">@drawable/button_number_15</item>
+    </style>
+
+
+    <declare-styleable name="CustomView">
+        <attr name="numStr" format="string" />
+    </declare-styleable>
+</resources>
